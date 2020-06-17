@@ -14,13 +14,47 @@ from typing import Any, List, Mapping
 from mseg.utils.csv_utils import read_csv
 
 
+
+def make_forecasting_plots():
+	""" """
+	sns.set_style({'font.family': 'monospace'}) #'Times New Roman'})
+	plt.style.use('ggplot')
+
+	result_dict = get_forecasting_results()
+
+	# labels = [
+	# 	'minADE (K=1)',
+	# 	'minADE (K=6)'
+	# ]
+
+	# labels = [
+	# 	'DAC (K=1)',
+	# 	'DAC (K=6)'
+	# ]
+
+	# labels = [
+	# 	'MR (K=1)',
+	# 	'MR (K=6)'
+	# ]
+
+	# labels = [
+	# 	'minFDE (K=1)',
+	# 	'minFDE (K=6)'
+	# ]
+
+	# labels = [
+	# 	'p-minADE (K=6)',
+	# 	'p-minFDE (K=6)'
+	# ]
+	make_plot(result_dict, labels)
+
+
 def make_tracking_plots():
 	""" """
 	sns.set_style({'font.family': 'monospace'}) #'Times New Roman'})
 	plt.style.use('ggplot')
 
 	result_dict = get_tracking_results()
-	x = np.arange(len(result_dict['Team name']))  # the label locations
 	
 	# labels = ['C:MOTA', 'P:MOTA', 'C:IDF1', 'P:IDF1']
 	labels = ['C:MT', 'P:MT', 'C:ML', 'P:ML']
@@ -77,7 +111,7 @@ def make_tracking_plots():
 	# 	'C:MOTPO',
 	# 	'P:MOTPO',
 	# ]
-	make_plot(x, result_dict, labels)
+	make_plot(result_dict, labels)
 
 
 def get_tracking_results():
@@ -134,8 +168,33 @@ def get_tracking_results():
 	return result_dict
 
 
-def make_plot(x, result_dict, labels):
+def get_forecasting_results():
 	""" """
+	fpath = '/Users/johnlamb/Downloads/cvpr-argoverse-forecasting-winners.csv'
+	rows = read_csv(fpath, delimiter=',')
+	result_dict = defaultdict(list)
+	for i,row in enumerate(rows):
+
+		print(row['Team name'])
+		result_dict['Team name'] += [row['Team name']]
+		result_dict['minADE (K=1)'] 			+= [float(row['minADE (K=1)'])]
+		result_dict['minFDE (K=1)'] 			+= [float(row['minFDE (K=1)'])]
+		result_dict['DAC (K=1)'] 				+= [float(row['DAC (K=1)'])]
+		result_dict['MR (K=1)']					+= [float(row['MR (K=1)'])]
+		result_dict['minADE (K=6)'] 			+= [float(row['minADE (K=6)'])]
+		result_dict['minFDE (K=6)'] 			+= [float(row['minFDE (K=6)'])]
+		result_dict['DAC (K=6)'] 				+= [float(row['DAC (K=6)'])]
+		result_dict['MR (K=6)'] 				+= [float(row['MR (K=6)'])]
+		result_dict['p-minADE (K=6)'] 			+= [float(row['p-minADE (K=6)'])]
+		result_dict['p-minFDE (K=6)'] 			+= [float(row['p-minFDE (K=6)'])]
+
+	return result_dict
+
+
+def make_plot(result_dict, labels):
+	""" """
+	x = np.arange(len(result_dict['Team name']))  # the label locations
+
 	if len(labels) == 2:
 		centers = [-0.2,0.2]
 		width=0.4
@@ -178,7 +237,7 @@ def make_plot(x, result_dict, labels):
 	    """Attach a text label above each bar in *rects*, displaying its height."""
 	    for rect in rects:
 	        height = rect.get_height()
-	        ax.annotate(f'{height:.0f}',
+	        ax.annotate(f'{height:.2f}',
 	                    xy=(rect.get_x() + rect.get_width() / 2, height),
 	                    xytext=(0, 3),  # 3 points vertical offset
 	                    textcoords="offset points",
@@ -195,6 +254,7 @@ def make_plot(x, result_dict, labels):
 
 if __name__ == '__main__':
 	""" """
-	make_tracking_plots()
+	#make_tracking_plots()
+	make_forecasting_plots()
 
 

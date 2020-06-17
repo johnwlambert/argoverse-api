@@ -49,22 +49,22 @@ def main():
 		result_dict['P:SW']    += [int(row['P:SW'])]
 		result_dict['C:FRG']   += [int(row['C:FRG'])]
 		result_dict['P:FRG']   += [int(row['P:FRG'])]
-		result_dict['C:MT-OCC']  += [float(row['C:MT-OCC'])]
-		result_dict['C:MT-FAR']  += [float(row['C:MT-FAR'])]
-		result_dict['C:ML-OCC']  += [float(row['C:ML-OCC'])]
-		result_dict['C:ML-FAR']  += [float(row['C:ML-FAR'])]
+		result_dict['C:MT-OCC']  += [100 * float(row['C:MT-OCC'])]
+		result_dict['C:MT-FAR']  += [100 * float(row['C:MT-FAR'])]
+		result_dict['C:ML-OCC']  += [100 * float(row['C:ML-OCC'])]
+		result_dict['C:ML-FAR']  += [100 * float(row['C:ML-FAR'])]
 		result_dict['C:FRG-OCC'] += [int(row['C:FRG-OCC'])]
 		result_dict['C:FRG-FAR'] += [int(row['C:FRG-FAR'])]
 		result_dict['C:SW-OCC']  += [int(row['C:SW-OCC'])]
 		result_dict['C:SW-FAR']  += [int(row['C:SW-FAR'])]
-		result_dict['C:MT-FST']  += [float(row['C:MT-FST'])]
-		result_dict['C:ML-FST']  += [float(row['C:ML-FST'])]
+		result_dict['C:MT-FST']  += [100 * float(row['C:MT-FST'])]
+		result_dict['C:ML-FST']  += [100 * float(row['C:ML-FST'])]
 		result_dict['C:FRG-FST'] += [int(row['C:FRG-FST'])]
 		result_dict['C:SW-FST']  += [int(row['C:SW-FST'])]
-		result_dict['P:MT-OCC']  += [float(row['P:MT-OCC'])]
-		result_dict['P:MT-FAR']  += [float(row['P:MT-FAR'])]
-		result_dict['P:ML-OCC']  += [float(row['P:ML-OCC'])]
-		result_dict['P:ML-FAR']  += [float(row['P:ML-FAR'])]
+		result_dict['P:MT-OCC']  += [100 * float(row['P:MT-OCC'])]
+		result_dict['P:MT-FAR']  += [100 * float(row['P:MT-FAR'])]
+		result_dict['P:ML-OCC']  += [100 * float(row['P:ML-OCC'])]
+		result_dict['P:ML-FAR']  += [100 * float(row['P:ML-FAR'])]
 		result_dict['P:FRG-OCC'] += [int(row['P:FRG-OCC'])]
 		result_dict['P:FRG-FAR'] += [int(row['P:FRG-FAR'])]
 		result_dict['P:SW-OCC']  += [int(row['P:SW-OCC'])]
@@ -77,9 +77,32 @@ def main():
 	# labels = ['C:FP','P:FP','C:FN','P:FN']
 
 	# labels = [
+	# 	'C:MT',
+	# 	'C:MT-FST',
+	# ]
+
+	# labels = [
+	# 	'C:MT', 
 	# 	'C:MT-OCC',
-	# 	'C:ML-OCC',
+	# 	'P:MT',
 	# 	'P:MT-OCC',
+	# ]
+
+	# labels = [
+	# 	'C:MT', 
+	# 	'C:MT-FAR',
+	# 	# 'C:ML',
+	# 	# 'C:ML-FAR',
+	# 	# 'P:MT-FAR',
+	# 	# 'P:ML-FAR',
+	# ]
+
+	labels = [
+		'C:MT', 
+		'C:MT-OCC',
+	# 	'C:ML-OCC',
+		'P:MT',
+		'P:MT-OCC',
 	# 	'P:ML-OCC',
 	# 	'C:MT-FAR',
 	# 	'C:ML-FAR',
@@ -87,12 +110,12 @@ def main():
 	# 	'P:ML-FAR',
 	# 	'C:MT-FST',
 	# 	'C:ML-FST'
-	# ]
-
-	labels = [
-		'C:FRG',
-		'P:FRG',
 	]
+
+	# labels = [
+	# 	'C:FRG',
+	# 	'P:FRG',
+	# ]
 
 	# labels = [
 	# 	'C:FRG-FAR',

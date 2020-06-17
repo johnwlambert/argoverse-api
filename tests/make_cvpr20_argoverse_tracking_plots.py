@@ -14,15 +14,77 @@ from typing import Any, List, Mapping
 from mseg.utils.csv_utils import read_csv
 
 
-def main():
+def make_tracking_plots():
 	""" """
-	fpath = '/Users/johnlamb/Downloads/cvpr-argoverse-tracking-winners.csv'
-	rows = read_csv(fpath, delimiter=',')
 	sns.set_style({'font.family': 'monospace'}) #'Times New Roman'})
 	plt.style.use('ggplot')
 
-	result_dict = defaultdict(list)
+	result_dict = get_tracking_results()
+	x = np.arange(len(result_dict['Team name']))  # the label locations
+	
+	# labels = ['C:MOTA', 'P:MOTA', 'C:IDF1', 'P:IDF1']
+	labels = ['C:MT', 'P:MT', 'C:ML', 'P:ML']
 
+	# # FPs and FNs decreased
+	# labels = ['C:FP','P:FP','C:FN','P:FN']
+
+	# # Effect of Speed
+	# labels = [
+	# 	'C:MT',
+	# 	'C:MT-FST',
+	# ]
+
+	# # Effect of Distance
+	# labels = [
+	# 	'C:MT', 
+	# 	'C:MT-FAR',
+	# ]
+
+	# Effect of Occlusion
+	# labels = [
+	# 	'C:MT', 
+	# 	'C:MT-OCC',
+	# 	'P:MT',
+	# 	'P:MT-OCC',
+	# ]
+
+	# labels = [
+	# 	'C:FRG',
+	# 	'P:FRG',
+	# ]
+
+	# labels = [
+	# 	'C:FRG-FAR',
+	# 	'P:FRG-FAR',
+	# 	'C:SW-FAR',
+	# 	'P:SW-FAR',
+	# 	'C:FRG-OCC',
+	# 	'P:FRG-OCC',
+	# 	'C:SW-OCC',
+	# 	'P:SW-OCC',
+	# 	'C:FRG-FST',
+	# 	'C:SW-FST',
+	# ]
+
+	# Effect on MOTP
+	# labels = [
+	# 	'C:MOTPD',
+	# 	'P:MOTPD',
+	# 	'C:MOTPI',
+	# 	'P:MOTPI',
+	# ]
+	# labels = [
+	# 	'C:MOTPO',
+	# 	'P:MOTPO',
+	# ]
+	make_plot(x, result_dict, labels)
+
+
+def get_tracking_results():
+	""" """
+	fpath = '/Users/johnlamb/Downloads/cvpr-argoverse-tracking-winners.csv'
+	rows = read_csv(fpath, delimiter=',')
+	result_dict = defaultdict(list)
 	for i,row in enumerate(rows):
 		print(row['Team name'])
 		# 'Submission ID,Submitted at,AVG-RANK,
@@ -69,77 +131,11 @@ def main():
 		result_dict['P:FRG-FAR'] += [int(row['P:FRG-FAR'])]
 		result_dict['P:SW-OCC']  += [int(row['P:SW-OCC'])]
 		result_dict['P:SW-FAR']  += [int(row['P:SW-FAR'])]
+	return result_dict
 
-	x = np.arange(len(result_dict['Team name']))  # the label locations
-	
-	# labels = ['C:MOTA', 'P:MOTA', 'C:IDF1', 'P:IDF1']
-	# labels = ['C:MT', 'P:MT', 'C:ML', 'P:ML']
-	# labels = ['C:FP','P:FP','C:FN','P:FN']
 
-	# labels = [
-	# 	'C:MT',
-	# 	'C:MT-FST',
-	# ]
-
-	# labels = [
-	# 	'C:MT', 
-	# 	'C:MT-OCC',
-	# 	'P:MT',
-	# 	'P:MT-OCC',
-	# ]
-
-	# labels = [
-	# 	'C:MT', 
-	# 	'C:MT-FAR',
-	# 	# 'C:ML',
-	# 	# 'C:ML-FAR',
-	# 	# 'P:MT-FAR',
-	# 	# 'P:ML-FAR',
-	# ]
-
-	labels = [
-		'C:MT', 
-		'C:MT-OCC',
-	# 	'C:ML-OCC',
-		'P:MT',
-		'P:MT-OCC',
-	# 	'P:ML-OCC',
-	# 	'C:MT-FAR',
-	# 	'C:ML-FAR',
-	# 	'P:MT-FAR',
-	# 	'P:ML-FAR',
-	# 	'C:MT-FST',
-	# 	'C:ML-FST'
-	]
-
-	# labels = [
-	# 	'C:FRG',
-	# 	'P:FRG',
-	# ]
-
-	# labels = [
-	# 	'C:FRG-FAR',
-	# 	'P:FRG-FAR',
-	# 	'C:SW-FAR',
-	# 	'P:SW-FAR',
-	# 	'C:FRG-OCC',
-	# 	'P:FRG-OCC',
-	# 	'C:SW-OCC',
-	# 	'P:SW-OCC',
-	# 	'C:FRG-FST',
-	# 	'C:SW-FST',
-	# ]
-	# labels = [
-	# 	'C:MOTPD',
-	# 	'P:MOTPD',
-	# 	'C:MOTPI',
-	# 	'P:MOTPI',
-	# ]
-	# labels = [
-	# 	'C:MOTPO',
-	# 	'P:MOTPO',
-	# ]
-
+def make_plot(x, result_dict, labels):
+	""" """
 	if len(labels) == 2:
 		centers = [-0.2,0.2]
 		width=0.4
@@ -150,9 +146,15 @@ def main():
 	fig, ax = plt.subplots()
 
 	all_rects = []
-	for label, offset in zip(labels, centers):
-		rects = ax.bar(x=x + offset, height=result_dict[label], width=width, label=label)
+
+	colors = [ "#ECA154", "#007672", "#245464", "#78909c"] # "#595959"]# "#212121"] # "#d3e8ef" ]
+	for label, offset,color in zip(labels, centers, colors):
+		rects = ax.bar(x=x + offset, height=result_dict[label], width=width, label=label, color=color)
 		all_rects += [rects]
+
+		# colors = [ "#ECA154", "#007672", "#245464", "#d3e8ef" ]
+		# for rect,color in zip(rects, colors):
+		# 	rect.set_color(color)
 
 	# Add some text for labels, title and custom x-axis tick labels, etc.
 	# ax.set_ylabel('Error (degrees)')
@@ -191,8 +193,8 @@ def main():
 
 
 
-
-
-
 if __name__ == '__main__':
-	main()
+	""" """
+	make_tracking_plots()
+
+

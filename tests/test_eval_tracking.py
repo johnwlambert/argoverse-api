@@ -429,14 +429,110 @@ Additional examples are here: https://arxiv.org/pdf/1603.00831.pdf
 """
 
 
+def get_orientation_error_deg(yaw1: float, yaw2: float):
+	"""
+	smallest difference between 2 angles
+	https://stackoverflow.com/questions/1878907/the-smallest-difference-between-2-angles
+
+		Args:
+		-	yaw1: angle around unit circle, in radians in [-pi,pi]
+		-	yaw2: angle around unit circle, in radians in [-pi,pi]
+
+		Returns:
+		-	error: smallest difference between 2 angles, in degrees
+	"""
+	assert -np.pi < yaw1 and yaw1 < np.pi
+	assert -np.pi < yaw2 and yaw2 < np.pi
+
+	error = np.rad2deg(yaw1 - yaw2)
+	if error > 180:
+		error -= 360
+	if error < -180:
+		error += 360
+	return np.abs(error)
+
+
+def test_orientation_error1():
+	""" """
+	yaw1 = np.deg2rad(179)
+	yaw2 = np.deg2rad(-179)
+
+	error_deg = get_orientation_error_deg(yaw1, yaw2)
+	assert np.allclose(error_deg, 2.0, atol=1e-2)
+
+def test_orientation_error2():
+	""" """
+	yaw1 = np.deg2rad(-179)
+	yaw2 = np.deg2rad(179)
+
+	error_deg = get_orientation_error_deg(yaw1, yaw2)
+	print(error_deg)
+	assert np.allclose(error_deg, 2.0, atol=1e-2)
+
+def test_orientation_error3():
+	""" """
+	yaw1 = np.deg2rad(179)
+	yaw2 = np.deg2rad(178)
+
+	error_deg = get_orientation_error_deg(yaw1, yaw2)
+	assert np.allclose(error_deg, 1.0, atol=1e-2)
+
+def test_orientation_error4():
+	""" """
+	yaw1 = np.deg2rad(178)
+	yaw2 = np.deg2rad(179)
+
+	error_deg = get_orientation_error_deg(yaw1, yaw2)
+	assert np.allclose(error_deg, 1.0, atol=1e-2)
+
+def test_orientation_error5():
+	""" """
+	yaw1 = np.deg2rad(3)
+	yaw2 = np.deg2rad(-3)
+
+	error_deg = get_orientation_error_deg(yaw1, yaw2)
+	assert np.allclose(error_deg, 6.0, atol=1e-2)
+
+def test_orientation_error6():
+	""" """
+	yaw1 = np.deg2rad(-3)
+	yaw2 = np.deg2rad(3)
+
+	error_deg = get_orientation_error_deg(yaw1, yaw2)
+	assert np.allclose(error_deg, 6.0, atol=1e-2)
+
+def test_orientation_error7():
+	""" """
+	yaw1 = np.deg2rad(-177)
+	yaw2 = np.deg2rad(-179)
+
+	error_deg = get_orientation_error_deg(yaw1, yaw2)
+	assert np.allclose(error_deg, 2.0, atol=1e-2)
+
+def test_orientation_error8():
+	""" """
+	yaw1 = np.deg2rad(-179)
+	yaw2 = np.deg2rad(-177)
+
+	error_deg = get_orientation_error_deg(yaw1, yaw2)
+	assert np.allclose(error_deg, 2.0, atol=1e-2)
+
+
+
 if __name__ == '__main__':
 	""" """
-	test_1obj_perfect()
-	test_1obj_offset_translation()
-	test_1obj_poor_translation()
+	# test_1obj_perfect()
+	# test_1obj_offset_translation()
+	# test_1obj_poor_translation()
 	# test_1obj_poor_orientation()
 
-
-
+	test_orientation_error1()
+	test_orientation_error2()
+	test_orientation_error3()
+	test_orientation_error4()
+	test_orientation_error5()
+	test_orientation_error6()
+	test_orientation_error7()
+	test_orientation_error8()
 
 

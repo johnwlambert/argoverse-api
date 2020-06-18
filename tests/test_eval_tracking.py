@@ -299,8 +299,19 @@ def test_1obj_offset_translation():
 
 
 def test_1obj_poor_translation():
-	""" """
-	log_id = '1obj_offset_translation'
+	"""
+	Miss in 1st frame, TP in 2nd frame,
+	lost in 3rd frame, retrack as TP in 4th frame
+
+	Yields 1 fragmentation. Prec=0.5, recall=0.5, F1=0.5
+
+	mostly tracked if it is successfully tracked
+	for at least 80% of its life span
+
+	If a track is only recovered for less than 20% of its
+	total length, it is said to be mostly lost (ML)
+	"""
+	log_id = '1obj_poor_translation'
 	
 	centers = []
 
@@ -312,7 +323,7 @@ def test_1obj_poor_translation():
 
 	# timestamp 1
 	cx = -2
-	cy = 4
+	cy = 3
 	cz = 0
 	centers += [(cx,cy,cz)]
 
@@ -337,21 +348,25 @@ def test_1obj_poor_translation():
 	_ = dump_scenario_json(gt_centers, gt_yaw_angles, log_id, is_gt=True, run_eval=False)
 	result_dict = dump_scenario_json(centers, yaw_angles, log_id, is_gt=False)
 
-	pdb.set_trace()
-	# assert result_dict['num_frames'] == 4
-	# assert result_dict['mota'] == 100.0
-	# assert np.allclose( result_dict['motp_c'], np.sqrt(2), atol=0.01) # (1,1) away each time
-	# assert result_dict['motp_o'] == 0.0
-	# assert result_dict['motp_i'] == 0.0
-	# assert result_dict['idf1'] == 1.0
-	# assert result_dict['most_track'] == 1.0
-	# assert result_dict['most_lost'] == 0.0
-	# assert result_dict['num_fp'] == 0
-	# assert result_dict['num_miss'] == 0
-	# assert result_dict['num_sw'] == 0
-	# assert result_dict['num_frag'] == 0
-
-
+	assert result_dict['num_frames'] == 4
+	sw = 0
+	mota = 1 - ((2 + 2 + 0) / 4) # 1 - (FN+FP+SW)/#GT
+	assert mota == 0.0
+	assert result_dict['mota'] == 0.0
+	assert np.allclose( result_dict['motp_c'], np.sqrt(2), atol=0.01) # (1,1) away each time
+	assert result_dict['motp_o'] == 0.0
+	assert result_dict['motp_i'] == 0.0
+	prec = 0.5
+	recall = 0.5
+	f1 = 2 * prec * recall / (prec + recall)
+	assert f1 == 0.5
+	assert result_dict['idf1'] == 0.5
+	assert result_dict['most_track'] == 0.0
+	assert result_dict['most_lost'] == 0.0
+	assert result_dict['num_fp'] == 2
+	assert result_dict['num_miss'] == 2 # false-negatives
+	assert result_dict['num_sw'] == 0
+	assert result_dict['num_frag'] == 1
 
 
 def test_1obj_poor_orientation():
@@ -409,11 +424,15 @@ def test_1obj_poor_orientation():
 	assert result_dict['num_frag'] == 0
 
 
+"""
+Additional examples are here: https://arxiv.org/pdf/1603.00831.pdf
+"""
+
 
 if __name__ == '__main__':
 	""" """
-	# test_1obj_perfect()
-	# test_1obj_offset_translation()
+	test_1obj_perfect()
+	test_1obj_offset_translation()
 	test_1obj_poor_translation()
 	# test_1obj_poor_orientation()
 
